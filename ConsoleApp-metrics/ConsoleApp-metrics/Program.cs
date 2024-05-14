@@ -1,33 +1,18 @@
-﻿using ConsoleApp_metrics;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using System;
 using System.Diagnostics.Metrics;
 using System.Threading;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSingleton<HatCoMetrics>();
-
-var app = builder.Build();
-
-app.MapGet("/", (HatCoMetrics hatCoMetrics) =>
-{
-    hatCoMetrics.SimulateMetrics();
-    return "Metrics Updated";
-});
-
-app.Run();
-
-public partial class Program
+class Program
 {
     static Meter s_meter = new Meter("HatCo.Store");
     static Counter<int> s_hatsSold = s_meter.CreateCounter<int>("hatco.store.hats_sold");
 
-    public static void Main(string[] args)
+    static void Main(string[] args)
     {
-        Console.WriteLine("Projeto do João Executando");
-        while (!Console.KeyAvailable)
+        Console.WriteLine("Press any key to exit");
+        while(!Console.KeyAvailable)
         {
+            // Pretend our store has a transaction each second that sells 4 hats
             Thread.Sleep(1000);
             s_hatsSold.Add(4);
         }
